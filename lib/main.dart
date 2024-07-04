@@ -1,36 +1,33 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:typing_test/services/word_provider.dart';
 import 'package:typing_test/views/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  String data = await loadWordList();
+  WordGenerator.initializeWordList(
+    data.split('\n').map((word) => word.trim()).toList(),
+  );
   runApp(const MyApp());
 }
 
 Future<String> loadWordList() async {
-  final firestore = FirebaseFirestore.instance;
-  final doc = await firestore.collection('wordLists').doc('words').get();
-  
-  if (doc.exists) {
-    return doc.data()?['wordList'] ?? '';
-  } else {
-    throw Exception('Word list document does not exist');
-  }
+  return await rootBundle.loadString('assets/words.txt');
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'another typing test',
+      title: 'SuperTyper',
       theme: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+          seedColor: Colors.orangeAccent,
           brightness: Brightness.dark,
         ),
         textTheme: GoogleFonts.robotoMonoTextTheme(),
@@ -45,4 +42,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

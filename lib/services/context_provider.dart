@@ -54,8 +54,6 @@ class TypingContext {
     }
     _enteredText = value;
     if (previouslyOvershot || currentlyOvershot) {
-      // If the user has entered a word that is one character off,
-      // recalculate remaining words
       lineStarts.removeRange(currentLineIndex + 1, lineStarts.length);
     }
   }
@@ -147,14 +145,11 @@ class TypingContext {
     }
   }
 
-  /// Deletes the previous word. Returns true if a word was deleted.
   bool deleteFullWord() {
-    // Delete whole word
     if (enteredText.isNotEmpty) {
       enteredText = '';
       return true;
     } else {
-      // Try to delete previous word.
       String? previousWord = popWord();
       if (previousWord != null) {
         return true;
@@ -172,7 +167,6 @@ class TypingContext {
       enteredText = enteredText.substring(0, enteredText.length - 1);
       return true;
     } else {
-      // Try to pop previous word in line
       String? previousWord = popWord();
       if (previousWord != null) {
         enteredText = previousWord;
@@ -190,7 +184,6 @@ class TypingContext {
     if (lineIndex < lineStarts.length) {
       return lineStarts[lineIndex];
     } else {
-      // Calculate line start
       while (lineIndex >= lineStarts.length) {
         if (lineStarts.isEmpty) {
           lineStarts.add(0);
@@ -214,8 +207,6 @@ class TypingContext {
       typedWords.add(getTypedWord(lineStart + i));
     }
     return typedWords;
-    // String typedLine = typedWords.join(' ');
-    // return typedLine.isNotEmpty ? typedLine + ' ' : '';
   }
 
   double getTypedWordCount() {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class KeyListener extends StatelessWidget {
-  const KeyListener({
+class InputListener extends StatelessWidget {
+  const InputListener({
     super.key,
     this.enabled = true,
     this.onSpacePressed,
@@ -41,7 +41,7 @@ class KeyListener extends StatelessWidget {
             onCtrlBackspacePressed?.call();
           }
 
-
+          // Ignore if this is a modifier key
           if (HardwareKeyboard.instance.isAltPressed ||
               HardwareKeyboard.instance.isControlPressed ||
               HardwareKeyboard.instance.isMetaPressed) {
