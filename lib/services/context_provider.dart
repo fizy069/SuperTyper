@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:typing_test/services/word_provider.dart';
+
 class TypedWord {
   const TypedWord.correct(this.value)
       : trailingHint = null,

@@ -1,6 +1,13 @@
 
 
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:typing_test/services/context_provider.dart';
+import 'package:typing_test/services/key_listener.dart';
+import 'package:typing_test/services/word_provider.dart';
+import 'package:typing_test/theme/app_pallete.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -87,7 +94,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     bool isCurrentWordWrong =
         !typingContext.currentWord.startsWith(typingContext.enteredText);
-    return InputListener(
+    return KeyListener(
       focusNode: focusNode,
       enabled: isTestEnabled,
       onSpacePressed: () {
@@ -243,7 +250,7 @@ class _HomePageState extends State<HomePage>
     return Text(
       text,
       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            color: ThemeColors.green,
+            color: DarkTheme.green,
           ),
     );
   }
@@ -276,7 +283,7 @@ class _HomePageState extends State<HomePage>
                 text: typedWord.value,
                 style: TextStyle(
                   color:
-                      typedWord.isCorrect ? ThemeColors.green : ThemeColors.red,
+                      typedWord.isCorrect ? DarkTheme.green : DarkTheme.red,
                 ),
               ),
               if (typedWord.trailingHint != null) ...{
@@ -355,7 +362,7 @@ class _HomePageState extends State<HomePage>
                 },
                 child: Container(
                   width: 4,
-                  color: ThemeColors.yellow,
+                  color: DarkTheme.yellow,
                 ),
               ),
             ],
@@ -372,8 +379,8 @@ class _HomePageState extends State<HomePage>
                     text: typedWord.value,
                     style: TextStyle(
                       color: typedWord.isCorrect
-                          ? ThemeColors.green
-                          : ThemeColors.red,
+                          ? DarkTheme.green
+                          : DarkTheme.red,
                     ),
                   ),
                   if (typedWord.trailingHint != null) ...{
@@ -395,8 +402,8 @@ class _HomePageState extends State<HomePage>
                   text: typingContext.enteredText,
                   style: TextStyle(
                     color: isCurrentWordWrong
-                        ? ThemeColors.red
-                        : ThemeColors.green,
+                        ? DarkTheme.red
+                        : DarkTheme.green,
                   ),
                 ),
                 if (remainingWords.isNotEmpty)
