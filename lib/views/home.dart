@@ -1,8 +1,5 @@
-
-
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:typing_test/services/context_provider.dart';
 import 'package:typing_test/services/key_listener.dart';
@@ -18,9 +15,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  static const Duration testDuration = Duration(seconds: 30);
+  static Duration testDuration = const Duration(seconds: 30); //default value
   static const Duration timerTick = Duration(seconds: 1);
   static const Duration cursorFadeDuration = Duration(milliseconds: 750);
+
+  void updateTestDuration(Duration newDuration) {
+    setState(() {
+      testDuration = newDuration;
+      refreshTypingContext();
+    });
+  }
 
   final FocusNode focusNode = FocusNode();
   late final AnimationController cursorAnimation = AnimationController(
@@ -28,10 +32,8 @@ class _HomePageState extends State<HomePage>
     duration: const Duration(milliseconds: 500),
   );
 
-  // Settings
   WordListType wordListType = WordListType.top200;
 
-  // Test-specific variables
   late int seed = 0;
   late TypingContext typingContext = TypingContext(seed, wordListType);
   String? timeLeft;
@@ -94,7 +96,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     bool isCurrentWordWrong =
         !typingContext.currentWord.startsWith(typingContext.enteredText);
-    return KeyListener(
+    return InputListener(
       focusNode: focusNode,
       enabled: isTestEnabled,
       onSpacePressed: () {
@@ -148,7 +150,7 @@ class _HomePageState extends State<HomePage>
                       child: AnimatedCrossFade(
                         sizeCurve: Curves.easeOutQuad,
                         firstChild: _buildTitle(
-                          wpm != null ? '$wpm WPM' : 'another typing test',
+                          wpm != null ? '$wpm WPM' : 'SuperTyper',
                         ),
                         secondChild: _buildTitle(timeLeft ?? ''),
                         duration: const Duration(milliseconds: 300),
@@ -161,6 +163,20 @@ class _HomePageState extends State<HomePage>
                     Wrap(
                       spacing: 8,
                       children: [
+                        OutlinedButton.icon(
+                          label: Text('Time : ${testDuration.inSeconds} sec'),
+                          icon: const Icon(Icons.refresh),
+                          onPressed: () {
+                            setState(() {
+                              if(testDuration == const Duration(seconds: 15)) {
+                                updateTestDuration(const Duration(seconds: 30));
+                              } else {
+                                updateTestDuration(const Duration(seconds: 15));
+                              }
+                              
+                            });
+                          },
+                        ),
                         OutlinedButton.icon(
                           label: const Text('Restart (tab + enter)'),
                           icon: const Icon(Icons.refresh),
@@ -250,7 +266,7 @@ class _HomePageState extends State<HomePage>
     return Text(
       text,
       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            color: DarkTheme.green,
+            color: DarkTheme.teal,
           ),
     );
   }
@@ -282,8 +298,7 @@ class _HomePageState extends State<HomePage>
               TextSpan(
                 text: typedWord.value,
                 style: TextStyle(
-                  color:
-                      typedWord.isCorrect ? DarkTheme.green : DarkTheme.red,
+                  color: typedWord.isCorrect ? DarkTheme.teal : DarkTheme.red,
                 ),
               ),
               if (typedWord.trailingHint != null) ...{
@@ -362,7 +377,7 @@ class _HomePageState extends State<HomePage>
                 },
                 child: Container(
                   width: 4,
-                  color: DarkTheme.yellow,
+                  color: DarkTheme.blue,
                 ),
               ),
             ],
@@ -378,9 +393,8 @@ class _HomePageState extends State<HomePage>
                   TextSpan(
                     text: typedWord.value,
                     style: TextStyle(
-                      color: typedWord.isCorrect
-                          ? DarkTheme.green
-                          : DarkTheme.red,
+                      color:
+                          typedWord.isCorrect ? DarkTheme.teal : DarkTheme.red,
                     ),
                   ),
                   if (typedWord.trailingHint != null) ...{
@@ -401,9 +415,7 @@ class _HomePageState extends State<HomePage>
                 TextSpan(
                   text: typingContext.enteredText,
                   style: TextStyle(
-                    color: isCurrentWordWrong
-                        ? DarkTheme.red
-                        : DarkTheme.green,
+                    color: isCurrentWordWrong ? DarkTheme.red : DarkTheme.teal,
                   ),
                 ),
                 if (remainingWords.isNotEmpty)
